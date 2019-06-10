@@ -25,13 +25,13 @@ var server = http.createServer(function(request, response) {
     // get a secret from KeyVault
     const kvClient = new KeyVault.KeyVaultClient(token);
     const kvBaseUrl = "https://did-enterprise-vault.vault.azure.net/";
-    const kvKeyName = "demo-secret";
-    const kvKeyVersion = "ac8f444803da4b969e65e9cde7b804c8";
-    kvClient.getKey(kvBaseUrl, kvKeyName, kvKeyVersion).then((kvKeyBundle) => {
+    const kvSecretName = "demo-secret";
+    const kvSecretVersion = "ac8f444803da4b969e65e9cde7b804c8";
+    kvClient.getSecret(kvBaseUrl, kvSecretName, kvSecretVersion).then((kvBundle) => {
 
       // write secret out to browser
       response.writeHead(200, {"Content-Type": "text/plain"});
-      response.end(JSON.stringify(kvKeyBundle))
+      response.end(JSON.stringify(kvBundle))
 
     }).catch((err) => { 
       console.log(err);
