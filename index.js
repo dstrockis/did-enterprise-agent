@@ -36,7 +36,7 @@ var server = http.createServer(function(request, response) {
     }).catch((err) => { 
       console.log(err);
       response.writeHead(200, {"Content-Type": "text/plain"});
-      response.end(JSON.stringify(token));
+      response.end(JSON.stringify(token) + "\n\n" + JSON.stringify((err)));
     });
   
   // handle any errors during authentication to KeyVault
