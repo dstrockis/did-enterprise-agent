@@ -9,7 +9,8 @@ const KeyVault = require('@azure/keyvault');
 const MsRestAzure = require('@azure/ms-rest-nodeauth');
 
 const options = MsRestAzure.MSIAppServiceOptions = {
-  msiEndpoint: "http://127.0.0.1:41741/MSI/token/"
+  // msiEndpoint: "http://127.0.0.1:41741/MSI/token/",
+  resource: 'https://vault.azure.net',
 }
 
 var server = http.createServer(function(request, response) {

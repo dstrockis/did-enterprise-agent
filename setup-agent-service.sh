@@ -21,3 +21,6 @@ az webapp identity assign --name "did-enterprise-agent" --resource-group "did-en
 
 # Create a policy that allows the MSI creds to be used to read secrets from the keyvault
 az keyvault set-policy --name "did-enterprise-vault" --object-id "c86fea70-c1ad-4eae-85d2-763c34f069f7" --secret-permissions "get"
+
+# Deploy web app (requires entering deployment password)
+git push azure master
