@@ -4,8 +4,21 @@ az group create --name "did-enterprise-agent" --location "East US"
 # Create a new key vault
 az keyvault create --name "did-enterprise-vault" --resource-group "did-enterprise-agent" --location "East US"
 
-# Put a secret into key vault
-az keyvault secret set --vault-name "did-enterprise-vault" --name "demo-secret" --value "hi-this-is-a-super-secret-secret"
+# Allow signing using keys
+az keyvault set-policy --name "did-enterprise-vault" --object-id "d73a60f1-2409-4e57-b9bb-fdb3d4010f85" --key-permissions get create delete list update import backup restore recover sign
+
+# Create Azure blob storage account
+az storage account create --name "enterpriseagent" --resource-group "did-enterprise-agent" --location "East US" --sku Standard_LRS --encryption blob
+
+# List out storage account keys (blob storage doesn't use user creds)
+az storage account keys list --account-name "enterpriseagent" --resource-group "did-enterprise-agent" --output json
+
+# Set storage account environment variables
+export AZURE_STORAGE_ACCOUNT="enterpriseagent"
+export AZURE_STORAGE_KEY="kEmrbBp71Kl3dL7LTHAD88HOBLfP6YQBduPQkVj6BggPhA494E/65L9zmtWUs7Jk0ug6zHOXrDXBtn0ZIktfPA=="
+
+# Create a blob storage container
+az storage container create --name "did-enterprise-agent-config"
 
 # Create app service plan
 az appservice plan create --name "did-enterprise-agent-plan" --resource-group "did-enterprise-agent"

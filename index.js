@@ -16,8 +16,8 @@ const options = MsRestAzure.MSIAppServiceOptions = {
 var server = http.createServer(function(request, response) {
 
   // get a token from MSI to call KeyVault
-  // MsRestAzure.AzureCliCredentials.create().then((token) => {
-  MsRestAzure.loginWithAppServiceMSI(options).then((token) => {
+  MsRestAzure.AzureCliCredentials.create({resource: 'https://vault.azure.net'}).then((token) => {
+  // MsRestAzure.loginWithAppServiceMSI(options).then((token) => {
 
     // log output from MSI
     console.log(token);
