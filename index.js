@@ -37,6 +37,10 @@ async function main() {
       // const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://storage.azure.com/'});
       var token = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://storage.azure.com/'});
 
+      response.writeHead(200, {"Content-Type": "text/plain"});
+      response.end(JSON.stringify(token));
+      return;
+
       // load Azure blob storage URLs
       const azBlobTokenCredential = new Azure.TokenCredential(token.tokenInfo.accessToken);
       const pipeline = new Azure.StorageURL.newPipeline(azBlobTokenCredential);
