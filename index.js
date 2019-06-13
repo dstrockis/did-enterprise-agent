@@ -38,7 +38,7 @@ async function main() {
       var token = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://storage.azure.com/'});
 
       response.writeHead(200, {"Content-Type": "text/plain"});
-      response.end(JSON.stringify(token));
+      response.end(JSON.stringify(token.getToken()));
       return;
 
       // load Azure blob storage URLs
