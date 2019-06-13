@@ -53,57 +53,67 @@ async function main() {
 
   var server = http.createServer(async function(request, response) {
 
-    // get a token from MSI to call KeyVault
-    const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://vault.azure.net'});
-    // const token = MsRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'});
+    try {
 
-    // setup KeyVault client
-    const kvClient = new KeyVault.KeyVaultClient(token);
-    const kvBaseUrl = "https://did-enterprise-vault.vault.azure.net/";
-    const kvKeyName = didConfig.kvKeyName;
-    const kvKeyVersion = didConfig.kvKeyVersion;
+      // get a token from MSI to call KeyVault
+      const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://vault.azure.net'});
+      // const token = MsRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'});
 
-    // construct the claim to be issued
-    const jwtHeader = {
-      "alg": "ES256K",
-      "typ": "JWT",
-      "kid": `${didConfig.did}#${didConfig.kvKeyVersion}`
-    } 
-    const jwtBody = {
-      "sub": "did:alice",
-      "iss": didConfig.did,
-      "iat": Date.now(),
-      "vc": {
-        "@context": ["https://schema.org/"],
-        "@type": ["Diploma"],
-        "credentialSubject": {
-          "student_name": "Alice Smith",
-          "graduation_year": "2013",
-          "university_name": "University of California, Los Angeles"
+      // setup KeyVault client
+      const kvClient = new KeyVault.KeyVaultClient(token);
+      const kvBaseUrl = "https://did-enterprise-vault.vault.azure.net/";
+      const kvKeyName = didConfig.kvKeyName;
+      const kvKeyVersion = didConfig.kvKeyVersion;
+
+      // construct the claim to be issued
+      const jwtHeader = {
+        "alg": "ES256K",
+        "typ": "JWT",
+        "kid": `${didConfig.did}#${didConfig.kvKeyVersion}`
+      } 
+      const jwtBody = {
+        "sub": "did:alice",
+        "iss": didConfig.did,
+        "iat": Date.now(),
+        "vc": {
+          "@context": ["https://schema.org/"],
+          "@type": ["Diploma"],
+          "credentialSubject": {
+            "student_name": "Alice Smith",
+            "graduation_year": "2013",
+            "university_name": "University of California, Los Angeles"
+          }
         }
       }
+
+      // form the signature input to pass to KeyVault to be signed
+      const encodedBody = base64url(Buffer.from(JSON.stringify(jwtBody)));
+      const encodedHeader = base64url(Buffer.from(JSON.stringify(jwtHeader)));
+      const signatureInput = encodedHeader + "." + encodedBody;
+      const hash = CryptoJS.SHA256(signatureInput);
+      const buffer = Buffer.from(hash.toString(CryptoJS.enc.Hex), 'hex');
+      const array = new Uint8Array(buffer);
+
+      // sign the claim with the private key in KeyVault
+      const signResponse = await kvClient.sign(kvBaseUrl, kvKeyName, kvKeyVersion, 'ES256K', array);
+      var signature = signResponse.result;
+      var derSig = toDer([signature.slice(0, signature.byteLength / 2), signature.slice(signature.byteLength / 2, signature.byteLength)]);
+      const encodedSignature = base64url(derSig);
+
+      // finally, form the claim as a JWT
+      const claimDetails = `${encodedHeader}.${encodedBody}.${encodedSignature}`;
+
+      // return the claim to the browser
+      response.writeHead(200, {"Content-Type": "text/plain"});
+      response.end(JSON.stringify(claimDetails));
+
+    } catch (err) {
+
+      // return the claim to the browser
+      response.writeHead(500, {"Content-Type": "text/plain"});
+      response.end(JSON.stringify(err));
+
     }
-
-    // form the signature input to pass to KeyVault to be signed
-    const encodedBody = base64url(Buffer.from(JSON.stringify(jwtBody)));
-    const encodedHeader = base64url(Buffer.from(JSON.stringify(jwtHeader)));
-    const signatureInput = encodedHeader + "." + encodedBody;
-    const hash = CryptoJS.SHA256(signatureInput);
-    const buffer = Buffer.from(hash.toString(CryptoJS.enc.Hex), 'hex');
-    const array = new Uint8Array(buffer);
-
-    // sign the claim with the private key in KeyVault
-    const signResponse = await kvClient.sign(kvBaseUrl, kvKeyName, kvKeyVersion, 'ES256K', array);
-    var signature = signResponse.result;
-    var derSig = toDer([signature.slice(0, signature.byteLength / 2), signature.slice(signature.byteLength / 2, signature.byteLength)]);
-    const encodedSignature = base64url(derSig);
-
-    // finally, form the claim as a JWT
-    const claimDetails = `${encodedHeader}.${encodedBody}.${encodedSignature}`;
-
-    // return the claim to the browser
-    response.writeHead(200, {"Content-Type": "text/plain"});
-    response.end(JSON.stringify(claimDetails));
   
   });
 
