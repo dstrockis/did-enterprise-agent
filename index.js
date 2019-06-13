@@ -36,9 +36,10 @@ async function main() {
       // get a token from MSI to call Azure Blob Storage
       // const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://storage.azure.com/'});
       var token = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://storage.azure.com/'});
+      var temp = await token.getToken();
 
       response.writeHead(200, {"Content-Type": "text/plain"});
-      response.end(JSON.stringify(token.getToken()));
+      response.end(JSON.stringify(temp));
       return;
 
       // load Azure blob storage URLs
