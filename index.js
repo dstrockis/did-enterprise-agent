@@ -35,7 +35,7 @@ async function main() {
 
       // get a token from MSI to call Azure Blob Storage
       // const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://storage.azure.com/'});
-      const token = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://storage.azure.com/'});
+      var token = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://storage.azure.com/'});
 
       // load Azure blob storage URLs
       const azBlobTokenCredential = new Azure.TokenCredential(token.tokenInfo.accessToken);
@@ -52,7 +52,7 @@ async function main() {
 
       // get a token from MSI to call KeyVault
       // const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://vault.azure.net'});
-      const token = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'});
+      token = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'});
 
 
       // setup KeyVault client
