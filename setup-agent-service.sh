@@ -35,5 +35,12 @@ az webapp identity assign --name "did-enterprise-agent" --resource-group "did-en
 # Create a policy that allows the MSI creds to be used to read secrets from the keyvault
 az keyvault set-policy --name "did-enterprise-vault" --object-id "c86fea70-c1ad-4eae-85d2-763c34f069f7" --secret-permissions get
 
+# Create a role assignment that allows the MSI creds to be used to read blobs from the container
+az role assignment create \
+  --role "Storage Blob Data Contributor" \
+  --assignee "c86fea70-c1ad-4eae-85d2-763c34f069f7" \
+  --scope "/subscriptions/3bffb807-683e-4510-96ff-c016d9d64d17/resourceGroups/did-enterprise-agent/providers/Microsoft.S
+torage/storageAccounts/enterpriseagent/blobServices/default/containers/did-enterprise-agent-config"
+
 # Deploy web app (requires entering deployment password)
 git push azure master

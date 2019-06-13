@@ -9,19 +9,21 @@ const KeyVault = require('@azure/keyvault');
 const MsRestAzure = require('@azure/ms-rest-nodeauth');
 const request = require('request');
 const CryptoJS = require('crypto-js');
-const crypto = require('crypto');
 const base64url = require('base64url');
 
 const Azure = require("@azure/storage-blob");
-const azBlobAccount = process.env.AZURE_STORAGE_ACCOUNT;
-const azBlobAccountKey = process.env.AZURE_STORAGE_KEY;
+// const azBlobAccount = process.env.AZURE_STORAGE_ACCOUNT;
+// const azBlobAccountKey = process.env.AZURE_STORAGE_KEY;
 
 
 async function main() {
 
+  // const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://storage.azure.com/'});
+  const token = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://storage.azure.com/'});
+
   // load Azure blob storage URLs
-  const azBlobCred = new Azure.SharedKeyCredential(azBlobAccount, azBlobAccountKey);
-  const pipeline = new Azure.StorageURL.newPipeline(azBlobCred);
+  const azBlobTokenCredential = new Azure.TokenCredential(token.tokenInfo.accessToken);
+  const pipeline = new Azure.StorageURL.newPipeline(azBlobTokenCredential);
   const azAccountUrl = new Azure.ServiceURL('https://enterpriseagent.blob.core.windows.net', pipeline);
   const azContainerUrl = Azure.ContainerURL.fromServiceURL(azAccountUrl, 'did-enterprise-agent-config');
   const azBlobUrl = Azure.BlobURL.fromContainerURL(azContainerUrl, 'did-config.json');
@@ -52,10 +54,11 @@ async function main() {
     const kvBaseUrl = "https://did-enterprise-vault.vault.azure.net/";
     const kvKeyName = "did-primary-signing-key";
 
-    // get a token from the Azure CLI to call KeyVault
     try {
       
-      const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://vault.azure.net'});
+    // get a token from the Azure CLI to call KeyVault
+      // const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://vault.azure.net'});
+      const token = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'});
 
       // provision a secp256k1 key in keyvault, remember the public key that is returned
       kvClient = new KeyVault.KeyVaultClient(token);
@@ -74,7 +77,7 @@ async function main() {
     try {
 
       // make some edits to the JWK format to meet expected format from registration service
-      kvPubJwk.kid = '#key-1';
+      kvPubJwk.kid = `#${kvKeyVersion}`;
       kvPubJwk.use = 'verify';
       kvPubJwk.defaultEncryptionAlgorithm = 'none';
       kvPubJwk.defaultSigningAlgorithm = 'ES256K';
@@ -123,7 +126,9 @@ async function main() {
 
       // create the enterprise agent config file
       didConfig = {
-        "did": registrationResult.id
+        "did": registrationResult.id,
+        "kvKeyName": kvKeyName,
+        "kvKeyVersion": kvKeyVersion
       };
 
 
