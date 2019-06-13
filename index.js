@@ -12,14 +12,6 @@ const base64url = require('base64url');
 const CryptoJS = require('crypto-js');
 const register_script = require('./register.js');
 
-// const azBlobAccount = process.env.AZURE_STORAGE_ACCOUNT;
-// const azBlobAccountKey = process.env.AZURE_STORAGE_KEY;
-
-// const options = MsRestAzure.MSIAppServiceOptions = {
-//   // msiEndpoint: "http://127.0.0.1:41741/MSI/token/",
-//   resource: 'https://vault.azure.net',
-// }
-
 var didConfig;
 
 // Function to read config from blob storage when the server first starts up
