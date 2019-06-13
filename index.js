@@ -24,29 +24,7 @@ var didConfig;
 // Function to read config from blob storage when the server first starts up
 async function setup_agent() {
 
-  // get a token from MSI to call Azure Blob Storage
-  // const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://storage.azure.com/'});
-  const token = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://storage.azure.com/'});
-
-  // load Azure blob storage URLs
-  const azBlobTokenCredential = new Azure.TokenCredential(token.tokenInfo.accessToken);
-  const pipeline = new Azure.StorageURL.newPipeline(azBlobTokenCredential);
-  const azAccountUrl = new Azure.ServiceURL('https://enterpriseagent.blob.core.windows.net', pipeline);
-  const azContainerUrl = Azure.ContainerURL.fromServiceURL(azAccountUrl, 'did-enterprise-agent-config');
-  const azBlobUrl = Azure.BlobURL.fromContainerURL(azContainerUrl, 'did-config.json');
-
-  // try to read a DID config file from Azure blob storage
-  try {
-    
-    const blobResponse = await azBlobUrl.download(Azure.Aborter.none, 0);
-    const didConfigData = await streamToString(blobResponse.readableStreamBody);
-    didConfig = JSON.parse(didConfigData);
-
-  } catch(err) {
-
-    console.log('Error downloading DID config file from Azure Blob Storage: ' + err);
-    
-  };
+ 
 };
 
 async function main() {
@@ -54,6 +32,23 @@ async function main() {
   var server = http.createServer(async function(request, response) {
 
     try {
+
+      // get a token from MSI to call Azure Blob Storage
+      // const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://storage.azure.com/'});
+      const token = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://storage.azure.com/'});
+
+      // load Azure blob storage URLs
+      const azBlobTokenCredential = new Azure.TokenCredential(token.tokenInfo.accessToken);
+      const pipeline = new Azure.StorageURL.newPipeline(azBlobTokenCredential);
+      const azAccountUrl = new Azure.ServiceURL('https://enterpriseagent.blob.core.windows.net', pipeline);
+      const azContainerUrl = Azure.ContainerURL.fromServiceURL(azAccountUrl, 'did-enterprise-agent-config');
+      const azBlobUrl = Azure.BlobURL.fromContainerURL(azContainerUrl, 'did-config.json');
+
+      // try to read a DID config file from Azure blob storage
+      const blobResponse = await azBlobUrl.download(Azure.Aborter.none, 0);
+      const didConfigData = await streamToString(blobResponse.readableStreamBody);
+      didConfig = JSON.parse(didConfigData);
+
 
       // get a token from MSI to call KeyVault
       // const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://vault.azure.net'});
