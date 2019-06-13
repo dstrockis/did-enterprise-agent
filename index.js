@@ -111,7 +111,7 @@ async function main() {
 
       // return the claim to the browser
       response.writeHead(500, {"Content-Type": "text/plain"});
-      response.end(JSON.stringify(err));
+      response.end(err);
 
     }
   
