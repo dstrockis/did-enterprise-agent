@@ -56,8 +56,9 @@ async function main() {
     try {
 
       // get a token from MSI to call KeyVault
-      const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://vault.azure.net'});
-      // const token = MsRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'});
+      // const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://vault.azure.net'});
+      const token = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'});
+
 
       // setup KeyVault client
       const kvClient = new KeyVault.KeyVaultClient(token);
@@ -110,11 +111,11 @@ async function main() {
     } catch (err) {
 
       // return the claim to the browser
-      response.writeHead(500, {"Content-Type": "text/plain"});
-      response.end(err);
+      response.writeHead(200, {"Content-Type": "text/plain"});
+      response.end(JSON.stringify(err.toString()));
 
     }
-  
+
   });
 
   var port = process.env.PORT || 1337;
