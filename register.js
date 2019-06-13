@@ -19,10 +19,12 @@ const Azure = require("@azure/storage-blob");
 async function main() {
 
   // const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://storage.azure.com/'});
-  const token = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://storage.azure.com/'});
+  // const tokenResp = token.tokenInfo;
+  const msiCred = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://storage.azure.com/'});
+  const tokenResp = await msiCred.getToken();
 
   // load Azure blob storage URLs
-  const azBlobTokenCredential = new Azure.TokenCredential(token.tokenInfo.accessToken);
+  const azBlobTokenCredential = new Azure.TokenCredential(tokenResp.accessToken);
   const pipeline = new Azure.StorageURL.newPipeline(azBlobTokenCredential);
   const azAccountUrl = new Azure.ServiceURL('https://enterpriseagent.blob.core.windows.net', pipeline);
   const azContainerUrl = Azure.ContainerURL.fromServiceURL(azAccountUrl, 'did-enterprise-agent-config');
