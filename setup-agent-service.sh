@@ -5,7 +5,7 @@ az group create --name "did-enterprise-agent" --location "East US"
 az keyvault create --name "did-enterprise-vault" --resource-group "did-enterprise-agent" --location "East US"
 
 # Allow signing using keys
-az keyvault set-policy --name "did-enterprise-vault" --object-id "d73a60f1-2409-4e57-b9bb-fdb3d4010f85" --key-permissions get create delete list update import backup restore recover sign
+az keyvault set-policy --name "did-enterprise-vault" --object-id "c86fea70-c1ad-4eae-85d2-763c34f069f7" --key-permissions create sign
 
 # Create Azure blob storage account
 az storage account create --name "enterpriseagent" --resource-group "did-enterprise-agent" --location "East US" --sku Standard_LRS --encryption blob
