@@ -16,7 +16,7 @@ const Azure = require("@azure/storage-blob");
 // const azBlobAccountKey = process.env.AZURE_STORAGE_KEY;
 
 
-async function main() {
+async function Register() {
 
   // const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://storage.azure.com/'});
   // const tokenResp = token.tokenInfo;
@@ -226,11 +226,6 @@ function toDer(elements) {
   return result;
 }
 
-// Run the script
-main()
-  .then(() => {
-    console.log("Successfully executed registration script.");
-  })
-  .catch(err => {
-    console.log(err.message);
-  });
+module.exports = {
+  Register: Register
+}

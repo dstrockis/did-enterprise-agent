@@ -10,6 +10,7 @@ const MsRestAzure = require('@azure/ms-rest-nodeauth');
 const Azure = require("@azure/storage-blob");
 const base64url = require('base64url');
 const CryptoJS = require('crypto-js');
+const register_script = require('./register.js');
 
 // const azBlobAccount = process.env.AZURE_STORAGE_ACCOUNT;
 // const azBlobAccountKey = process.env.AZURE_STORAGE_KEY;
@@ -23,6 +24,9 @@ var didConfig;
 
 // Function to read config from blob storage when the server first starts up
 async function setup_agent() {
+
+  // first, perform DID registration and ensure necessary keys are provisioned
+  await register_script.Register();
 
   // get a token from MSI to call Azure Blob Storage
   // const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://storage.azure.com/'});
@@ -52,6 +56,9 @@ async function setup_agent() {
 };
 
 async function main() {
+
+  // perform pre-run operations
+  await setup_agent();
 
   var server = http.createServer(async function(request, response) {
 
@@ -178,5 +185,4 @@ function toDer(elements) {
   return result;
 }
 
-setup_agent();
 main();
