@@ -61,6 +61,14 @@
       "metadata": {
         "description": "The branch of the GitHub repository to use."
       }
+    },
+    "keyVaultName": {
+      "type": "string",
+      "defaultValue" : "enterprise-agent-vault",
+      "metadata": {
+        "description": "A name for the key vault used to store your enterprise's DID private keys."
+      },
+      "minLength": 2
     }
   },
   "resources": [
@@ -102,6 +110,12 @@
           }
         }
       ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "name": "[parameters('keyVaultName')]",
+      "location": "[parameters('location')]",
+      "apiVersion": "2018-02-14"
     }
   ]
 }
