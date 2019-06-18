@@ -8,7 +8,7 @@ az keyvault create --name "did-enterprise-vault" --resource-group "did-enterpris
 az keyvault set-policy --name "did-enterprise-vault" --object-id "c86fea70-c1ad-4eae-85d2-763c34f069f7" --key-permissions create sign
 
 # Create Azure blob storage account
-az storage account create --name "enterpriseagent" --resource-group "did-enterprise-agent" --location "East US" --sku Standard_LRS --encryption blob
+az storage account create --name "agent-storage" --resource-group "did-enterprise-agent" --location "East US" --sku Standard_LRS --encryption blob
 
 # List out storage account keys (blob storage doesn't use user creds)
 az storage account keys list --account-name "enterpriseagent" --resource-group "did-enterprise-agent" --output json
