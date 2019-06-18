@@ -134,7 +134,7 @@
         "tenantId": "[subscription().tenantId]",
         "accessPolicies": [],
         "sku": {
-          "name": "[parameters('skuName')]",
+          "name": "[parameters('keyVaultSkuName')]",
           "family": "A"
         },
         "networkAcls": {
