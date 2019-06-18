@@ -132,6 +132,7 @@
       "apiVersion": "2018-02-14",
       "properties": {
         "tenantId": "[subscription().tenantId]",
+        "accessPolicies": [],
         "sku": {
           "name": "[parameters('skuName')]",
           "family": "A"
