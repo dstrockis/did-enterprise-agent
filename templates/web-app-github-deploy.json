@@ -2,24 +2,19 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "appServicePlanName": {
+    "siteName": {
       "type": "string",
-      "defaultValue" : "contoso-enterprise-agent-service-plan",
       "metadata": {
-        "description": "A name for the app service plan that will be created for your enterprise agent."
-      },
-      "minLength": 2
-    },
-    "location": {
-      "type": "string",
-      // "defaultValue": "[resourceGroup().location]", // not working in Azure Deploy UI,
-      // "allowedValues": [ "<array-of-allowed-values>" ],
-      "defaultValue": "eastus",
-      "metadata": {
-        "description": "Location for all resources."
+        "description": "The name of the web app that you wish to create."
       }
     },
-    "sku":{
+    "hostingPlanName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the App Service plan to use for hosting the web app."
+      }
+    },
+    "sku": {
       "type": "string",
       "allowedValues": [
         "F1",
@@ -40,17 +35,21 @@
         "description": "The pricing tier for the hosting plan."
       }
     },
-    "webAppName": {
+    "workerSize": {
       "type": "string",
-      "defaultValue" : "contoso-enterprise-agent",
+      "allowedValues": [
+        "0",
+        "1",
+        "2"
+      ],
+      "defaultValue": "0",
       "metadata": {
-        "description": "A name for the web service for your enterprise agent."
-      },
-      "minLength": 2
+        "description": "The instance size of the hosting plan (small, medium, or large)."
+      }
     },
     "repoURL": {
       "type": "string",
-      "defaultValue": "https://github.com/dstrockis/did-enterprise-agent.git",
+      "defaultValue": "https://github.com/davidebbo-test/Mvc52Application.git",
       "metadata": {
         "description": "The URL for the GitHub repository that contains the project to deploy."
       }
@@ -61,39 +60,47 @@
       "metadata": {
         "description": "The branch of the GitHub repository to use."
       }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
     }
   },
   "resources": [
     {
+      "apiVersion": "2015-08-01",
+      "name": "[parameters('hostingPlanName')]",
       "type": "Microsoft.Web/serverfarms",
-      "apiVersion": "2017-08-01",
-      "kind": "app",
-      "name": "[parameters('appServicePlanName')]",
       "location": "[parameters('location')]",
-      "dependsOn": [],
       "sku": {
-        "name": "[parameters('sku')]"
+        "name": "[parameters('sku')]",
+        "capacity": "[parameters('workerSize')]"
+      },
+      "properties": {
+        "name": "[parameters('hostingPlanName')]"
       }
     },
     {
+      "apiVersion": "2015-08-01",
+      "name": "[parameters('siteName')]",
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2016-08-01",
-      "kind": "app",
-      "name": "[parameters('webAppName')]",
       "location": "[parameters('location')]",
-      "properties": {
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
-      },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+        "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
       ],
+      "properties": {
+        "serverFarmId": "[parameters('hostingPlanName')]"
+      },
       "resources": [
         {
           "apiVersion": "2015-08-01",
           "name": "web",
           "type": "sourcecontrols",
           "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites', parameters('webAppName'))]"
+            "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
           ],
           "properties": {
             "RepoUrl": "[parameters('repoURL')]",
