@@ -95,6 +95,9 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
       ],
+      "identity": {
+        "type": "SystemAssigned"
+      },
       "resources": [
         {
           "apiVersion": "2015-08-01",
