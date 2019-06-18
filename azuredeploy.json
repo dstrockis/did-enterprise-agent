@@ -69,6 +69,17 @@
         "description": "A name for the key vault used to store your enterprise's DID private keys."
       },
       "minLength": 2
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Standard",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "Specifies whether the key vault is a standard vault or a premium vault."
+      }
     }
   },
   "resources": [
@@ -118,7 +129,30 @@
       "type": "Microsoft.KeyVault/vaults",
       "name": "[parameters('keyVaultName')]",
       "location": "[parameters('location')]",
-      "apiVersion": "2018-02-14"
+      "apiVersion": "2018-02-14",
+      "properties": {
+        "tenantId": "[subscription().tenantId]",
+        // "accessPolicies": [
+        //   {
+        //     "objectId": "[parameters('objectId')]",
+        //     "tenantId": "[parameters('tenantId')]",
+        //     "permissions": {
+        //       "keys": "[parameters('keysPermissions')]",
+        //       "secrets": "[parameters('secretsPermissions')]"      
+        //     }
+        //   }
+        // ],
+        "sku": {
+          "name": "[parameters('skuName')]",
+          "family": "A"
+        },
+        "networkAcls": {
+          "value": {
+            "defaultAction": "Allow",
+            "bypass": "AzureServices"
+          }
+        }
+      }
     }
   ]
 }
