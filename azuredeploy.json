@@ -12,7 +12,9 @@
     },
     "location": {
       "type": "string",
-      "defaultValue": "[concat('site', 'test')]",
+      // "defaultValue": "[resourceGroup().location]", // not working in Azure Deploy UI,
+      // "allowedValues": [ "<array-of-allowed-values>" ],
+      "defaultValue": "eastus",
       "metadata": {
         "description": "Location for all resources."
       }
@@ -41,15 +43,12 @@
     {
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2017-08-01",
-      "kind": "linux",
+      "kind": "app",
       "name": "[parameters('appServicePlanName')]",
       "location": "[parameters('location')]",
       "dependsOn": [],
       "sku": {
         "name": "[parameters('sku')]"
-      },
-      "properties":{
-        "reserved":true
       }
     },
     {
@@ -59,10 +58,7 @@
       "name": "[parameters('webAppName')]",
       "location": "[parameters('location')]",
       "properties": {
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
-        "siteConfig": {
-            "linuxFxVersion": "NODE|10.14"
-          }
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
