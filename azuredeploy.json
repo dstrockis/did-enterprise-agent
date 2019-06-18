@@ -70,7 +70,7 @@
       },
       "minLength": 2
     },
-    "skuName": {
+    "keyVaultSkuName": {
       "type": "string",
       "defaultValue": "Standard",
       "allowedValues": [
@@ -132,16 +132,6 @@
       "apiVersion": "2018-02-14",
       "properties": {
         "tenantId": "[subscription().tenantId]",
-        // "accessPolicies": [
-        //   {
-        //     "objectId": "[parameters('objectId')]",
-        //     "tenantId": "[parameters('tenantId')]",
-        //     "permissions": {
-        //       "keys": "[parameters('keysPermissions')]",
-        //       "secrets": "[parameters('secretsPermissions')]"      
-        //     }
-        //   }
-        // ],
         "sku": {
           "name": "[parameters('skuName')]",
           "family": "A"
