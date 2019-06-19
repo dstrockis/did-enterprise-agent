@@ -131,7 +131,23 @@
       "name": "[parameters('webAppName')]",
       "location": "[parameters('location')]",
       "properties": {
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "AZURE_STORAGE_ACCOUNT",
+              "value": "[parameters('storageAccountName')]"
+            },
+            {
+              "name": "AZURE_STORAGE_CONTAINER",
+              "value": "[parameters('containerName')]"
+            },
+            {
+              "name": "AZURE_KEY_VAULT",
+              "value": "[parameters('keyVaultName')]"
+            }
+          ]
+        }
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
@@ -150,21 +166,7 @@
           "properties": {
             "RepoUrl": "[parameters('repoURL')]",
             "branch": "[parameters('branch')]",
-            "IsManualIntegration": true,
-            "appSettings": [
-              {
-                "name": "AZURE_STORAGE_ACCOUNT",
-                "value": "[parameters('storageAccountName')]"
-              },
-              {
-                "name": "AZURE_STORAGE_CONTAINER",
-                "value": "[parameters('containerName')]"
-              },
-              {
-                "name": "AZURE_KEY_VAULT",
-                "value": "[parameters('keyVaultName')]"
-              }
-            ]
+            "IsManualIntegration": true
           }
         }
       ]
