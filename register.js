@@ -15,6 +15,11 @@ const Azure = require("@azure/storage-blob");
 // const azBlobAccount = process.env.AZURE_STORAGE_ACCOUNT;
 // const azBlobAccountKey = process.env.AZURE_STORAGE_KEY;
 
+// BOOKMARK: how to get the config values from deployment into this script?
+// Perhaps use an Application Setting to set an environment variable: 
+// https://docs.microsoft.com/en-us/azure/templates/microsoft.web/2018-11-01/sites
+// and then read the variable here, which could contain pointers to Azure Blob 
+// Storage, which would contain all other config values.
 
 async function Register() {
 

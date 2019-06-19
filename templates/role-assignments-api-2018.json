@@ -208,16 +208,22 @@
     },
     {
       "name": "[parameters('roleAssignmentName')]",
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2018-07-01",
+      "type": "Microsoft.Authorization/policyAssignments",
+      "apiVersion": "2018-05-01",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
         "[resourceId('Microsoft.Web/Sites', parameters('webAppName'))]"
       ],
-      "properties": {
-        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+      "identity": {
+        "type": "SystemAssigned",
         "principalId": "[reference(parameters('webAppName'), '2018-11-01', 'Full').identity.principalId]",
-        "scope": "[resourceGroup().id]"
+        "tenantId": "[reference(parameters('webAppName'), '2018-11-01', 'Full').identity.tenantId]"
+      },
+      "properties": {
+        // TODO: this is the correct role to assign, the one we're using now is too much access
+        "policyDefinitionId": "ba92f5b4-2d11-453d-a403-e96b0029c9fe",
+        "scope": "[concat(resourceGroup().id, '/providers/Microsoft.Storage/storageAccounts/', parameters('storageAccountName'), '/blobServices/default/containers/', parameters('containerName'))]"
       }
     }
   ]
