@@ -27,10 +27,8 @@ var didConfig;
 async function FetchDidConfig() {
 
   // get a token from MSI to call Azure Blob Storage
-  const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://storage.azure.com/'});
-  const tokenResp = token.tokenInfo;
-  // const msiCred = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://storage.azure.com/'});
-  // const tokenResp = await msiCred.getToken();
+  const msiCred = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://storage.azure.com/'});
+  const tokenResp = await msiCred.getToken();
 
   // get pointers to Azure blob storage from environment variables
   const azBlobAccount = process.env.AZURE_STORAGE_ACCOUNT;
@@ -88,8 +86,7 @@ async function EnsureDidRegistered() {
   const kvBaseUrl = `https://${kvVaultName}.vault.azure.net/`;
 
   // get a token from the Azure CLI to call KeyVault
-  const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://vault.azure.net'});
-  // const token = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'});
+  const token = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'});
 
   // provision a secp256k1 key in keyvault, remember the public key that is returned
   kvClient = new KeyVault.KeyVaultClient(token);
@@ -170,8 +167,7 @@ async function EnsureDidRegistered() {
 async function GetSignatureForString(inputString, keyName, keyVersion) {
 
   // get a token from MSI to call KeyVault
-  const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://vault.azure.net'}); 
-  // const token = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'});
+  const token = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'});
 
   // get pointer to KeyVault from environment variables
   const kvVaultName = process.env.AZURE_KEY_VAULT;
