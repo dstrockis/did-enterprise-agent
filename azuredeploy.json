@@ -103,6 +103,13 @@
       "metadata": {
         "description": "Specifies the name of the role assignment to create. It can be any valid GUID."
       }      
+    },
+    "roleAssignmentNameTwo": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "Specifies the name of the role assignment to create. It can be any valid GUID."
+      }      
     }
   },
   "resources": [
@@ -143,7 +150,21 @@
           "properties": {
             "RepoUrl": "[parameters('repoURL')]",
             "branch": "[parameters('branch')]",
-            "IsManualIntegration": true
+            "IsManualIntegration": true,
+            "appSettings": [
+              {
+                "name": "AZURE_STORAGE_ACCOUNT",
+                "value": "[parameters('storageAccountName')]"
+              },
+              {
+                "name": "AZURE_STORAGE_CONTAINER",
+                "value": "[parameters('containerName')]"
+              },
+              {
+                "name": "AZURE_KEY_VAULT",
+                "value": "[parameters('keyVaultName')]"
+              }
+            ]
           }
         }
       ]

@@ -12,14 +12,6 @@ const CryptoJS = require('crypto-js');
 const base64url = require('base64url');
 
 const Azure = require("@azure/storage-blob");
-// const azBlobAccount = process.env.AZURE_STORAGE_ACCOUNT;
-// const azBlobAccountKey = process.env.AZURE_STORAGE_KEY;
-
-// BOOKMARK: how to get the config values from deployment into this script?
-// Perhaps use an Application Setting to set an environment variable: 
-// https://docs.microsoft.com/en-us/azure/templates/microsoft.web/2018-11-01/sites
-// and then read the variable here, which could contain pointers to Azure Blob 
-// Storage, which would contain all other config values.
 
 async function Register() {
 
@@ -28,11 +20,16 @@ async function Register() {
   const msiCred = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://storage.azure.com/'});
   const tokenResp = await msiCred.getToken();
 
+  // get pointers to Azure blob storage from environment variables
+  const azBlobAccount = process.env.AZURE_STORAGE_ACCOUNT;
+  const azBlobContainer = process.env.AZURE_STORAGE_CONTAINER;
+
   // load Azure blob storage URLs
   const azBlobTokenCredential = new Azure.TokenCredential(tokenResp.accessToken);
+  console.log(tokenResp.accessToken);
   const pipeline = new Azure.StorageURL.newPipeline(azBlobTokenCredential);
-  const azAccountUrl = new Azure.ServiceURL('https://enterpriseagent.blob.core.windows.net', pipeline);
-  const azContainerUrl = Azure.ContainerURL.fromServiceURL(azAccountUrl, 'did-enterprise-agent-config');
+  const azAccountUrl = new Azure.ServiceURL(`https://${azBlobAccount}.blob.core.windows.net`, pipeline);
+  const azContainerUrl = Azure.ContainerURL.fromServiceURL(azAccountUrl, azBlobContainer);
   const azBlobUrl = Azure.BlobURL.fromContainerURL(azContainerUrl, 'did-config.json');
 
   var didConfig;
@@ -55,15 +52,18 @@ async function Register() {
   // if file does not exist, we need to register a DID and create the config file
   if (!didConfig) {
 
+    // get pointer to KeyVault from environment variables
+    const kvVaultName = process.env.AZURE_KEY_VAULT;
+
     var kvClient;
     var kvKeyVersion;
     var kvPubJwk;
-    const kvBaseUrl = "https://did-enterprise-vault.vault.azure.net/";
+    const kvBaseUrl = `https://${kvVaultName}.vault.azure.net/`;
     const kvKeyName = "did-primary-signing-key";
 
     try {
       
-    // get a token from the Azure CLI to call KeyVault
+      // get a token from the Azure CLI to call KeyVault
       // const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://vault.azure.net'});
       const token = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'});
 

@@ -26,11 +26,15 @@ async function setup_agent() {
   const msiCred = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://storage.azure.com/'});
   const tokenResp = await msiCred.getToken();
 
+  // get pointers to Azure blob storage from environment variables
+  const azBlobAccount = process.env.AZURE_STORAGE_ACCOUNT;
+  const azBlobContainer = process.env.AZURE_STORAGE_CONTAINER;
+
   // load Azure blob storage URLs
   const azBlobTokenCredential = new Azure.TokenCredential(tokenResp.accessToken);
   const pipeline = new Azure.StorageURL.newPipeline(azBlobTokenCredential);
-  const azAccountUrl = new Azure.ServiceURL('https://enterpriseagent.blob.core.windows.net', pipeline);
-  const azContainerUrl = Azure.ContainerURL.fromServiceURL(azAccountUrl, 'did-enterprise-agent-config');
+  const azAccountUrl = new Azure.ServiceURL(`https://${azBlobAccount}.blob.core.windows.net`, pipeline);
+  const azContainerUrl = Azure.ContainerURL.fromServiceURL(azAccountUrl, azBlobContainer);
   const azBlobUrl = Azure.BlobURL.fromContainerURL(azContainerUrl, 'did-config.json');
 
   // try to read a DID config file from Azure blob storage
@@ -56,13 +60,18 @@ async function main() {
 
     try {
 
+      console.log('Got a request');
+
       // get a token from MSI to call KeyVault
       // const token = await MsRestAzure.AzureCliCredentials.create({resource: 'https://vault.azure.net'});
       const token = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'});
 
+      // get pointer to KeyVault from environment variables
+      const kvVaultName = process.env.AZURE_KEY_VAULT;
+
       // setup KeyVault client
       const kvClient = new KeyVault.KeyVaultClient(token);
-      const kvBaseUrl = "https://did-enterprise-vault.vault.azure.net/";
+      const kvBaseUrl = `https://${kvVaultName}.vault.azure.net/`;
       const kvKeyName = didConfig.kvKeyName;
       const kvKeyVersion = didConfig.kvKeyVersion;
 
@@ -109,6 +118,8 @@ async function main() {
       response.end(JSON.stringify(claimDetails));
 
     } catch (err) {
+
+      console.log(err);
 
       // return the claim to the browser
       response.writeHead(200, {"Content-Type": "text/plain"});
