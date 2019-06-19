@@ -64,7 +64,7 @@
     },
     "keyVaultName": {
       "type": "string",
-      "defaultValue" : "enterprise-agent-vault",
+      "defaultValue" : "contosoAgentVault",
       "metadata": {
         "description": "A name for the key vault used to store your enterprise's DID private keys."
       },
@@ -96,20 +96,6 @@
         "description": "The name of the blob container to store enterprise agent configuration files."
       },
       "minLength": 2
-    },
-    "roleAssignmentName": {
-      "type": "string",
-      "defaultValue": "[newGuid()]",
-      "metadata": {
-        "description": "Specifies the name of the role assignment to create. It can be any valid GUID."
-      }      
-    },
-    "roleAssignmentNameTwo": {
-      "type": "string",
-      "defaultValue": "[newGuid()]",
-      "metadata": {
-        "description": "Specifies the name of the role assignment to create. It can be any valid GUID."
-      }      
     }
   },
   "resources": [
@@ -230,7 +216,7 @@
       ]
     },
     {
-      "name": "[parameters('roleAssignmentName')]",
+      "name": "[guid(resourceGroup().id, deployment().name)]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2018-07-01",
       "dependsOn": [
