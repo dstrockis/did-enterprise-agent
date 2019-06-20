@@ -3,16 +3,16 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "keyVaultName": {
-      "value": "contosoEAVault13"
+      "value": "contosoEAVault"
     },
     "appServicePlanName": {
-      "value": "contoso-enterprise-agent-plan-13"
+      "value": "contoso-enterprise-agent-plan"
     },
     "webAppName": {
-      "value": "contoso-enterprise-agent-service-13"
+      "value": "contoso-enterprise-agent"
     },
     "storageAccountName": {
-      "value": "contenterpriseagent13"
+      "value": "contosoEA"
     }
   }
 }
