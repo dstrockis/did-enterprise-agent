@@ -30,6 +30,8 @@ async function main() {
   // listen for incoming requests for verifiable claims
   var server = http.createServer(async function(request, response) {
 
+    console.log(`Request received at ${Date.now()}`);
+
     try {
 
        // create the contents of the claim (hard-coded for now)
