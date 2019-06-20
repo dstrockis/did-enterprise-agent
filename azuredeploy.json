@@ -12,7 +12,7 @@
     },
     "location": {
       "type": "string",
-      "defaultValue": "eastus",
+      "defaultValue": "[resourceGroup().location]",
       "allowedValues": [
        "centralus",
        "northeurope",
