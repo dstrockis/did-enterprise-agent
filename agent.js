@@ -50,6 +50,35 @@ async function FetchDidConfig() {
 
 
 
+// Writes a DID configuration object to Azure Blob Storage
+// Azure blob storage location stored in environment variables
+// Azure blob storage credentials provided by Azure managed identities
+async function UploadDidConfig(config) {
+
+  // get a token from MSI to call Azure Blob Storage
+  const msiCred = await MsRestAzure.loginWithAppServiceMSI({resource: 'https://storage.azure.com/'});
+  const tokenResp = await msiCred.getToken();
+
+  // get pointers to Azure blob storage from environment variables
+  const azBlobAccount = process.env.AZURE_STORAGE_ACCOUNT;
+  const azBlobContainer = process.env.AZURE_STORAGE_CONTAINER;
+
+  // load Azure blob storage URLs
+  const azBlobTokenCredential = new Azure.TokenCredential(tokenResp.accessToken);
+  const pipeline = new Azure.StorageURL.newPipeline(azBlobTokenCredential);
+  const azAccountUrl = new Azure.ServiceURL(`https://${azBlobAccount}.blob.core.windows.net`, pipeline);
+  const azContainerUrl = Azure.ContainerURL.fromServiceURL(azAccountUrl, azBlobContainer);
+  const azBlobUrl = Azure.BlobURL.fromContainerURL(azContainerUrl, didConfigFileName);
+
+  // try to write DID config file to Azure blob storage
+  const azBlockBlobUrl = Azure.BlockBlobURL.fromBlobURL(azBlobUrl);
+  const uploadBlobResponse = await azBlockBlobUrl.upload(Azure.Aborter.none, config, config.length);
+  return;
+
+}
+
+
+
 
 // Registers a DID for the enterprise, if one has not already been registered
 // Creates a Secp256K1 key in Azure Key Vault
@@ -147,16 +176,14 @@ async function EnsureDidRegistered() {
 
   console.log('Successfully registered a DID.');  
 
-  const config = JSON.stringify(didConfig);
-  const azBlockBlobUrl = Azure.BlockBlobURL.fromBlobURL(azBlobUrl);
-  const uploadBlobResponse = await azBlockBlobUrl.upload(Azure.Aborter.none, config, config.length);
+  // upload the new DID configuration document to Azure Blob Storage
+  UploadDidConfig(JSON.stringify(didConfig));
 
   console.log('Successfully uploaded a new DID config file to Azure blob storage.');  
 
   return;
 
 }
-
 
 
 
