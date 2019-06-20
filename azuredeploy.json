@@ -254,7 +254,7 @@
       ]
     },
     {
-      "name": "[guid(resourceGroup().id, deployment().name, parameters('storageAccountName'), parameters('webAppName')]",
+      "name": "[guid(resourceGroup().id, deployment().name, parameters('storageAccountName'), parameters('webAppName'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2018-07-01",
       "dependsOn": [
