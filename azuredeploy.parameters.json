@@ -12,7 +12,7 @@
       "value": "contoso-enterprise-agent"
     },
     "storageAccountName": {
-      "value": "contosoEA"
+      "value": "contosoagent"
     }
   }
 }

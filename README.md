@@ -5,14 +5,7 @@ Prototype DID Enterprise Agent
 
 1. Click the Deploy to Azure button below.
 2. Fill out the details in the Azure portal with your own values.
-3. Click Deploy, and wait for deployment to complete!
-
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
-
-<a href="http://armviz.io/#/?load=https://github.com/dstrockis/did-enterprise-agent/tree/master/azuredeploy.json" target="_blank">
-<img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/visualizebutton.png"/>
-</a>
-
+3. Click Purchase, and wait for deployment to complete! You can view the status of your deployment by navigating to your resource group and clicking on **Deployments**.
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdstrockis%2Fdid-enterprise-agent%2Fmaster%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
@@ -54,7 +47,8 @@ https://my-enterprise-agent.azurewebsites.net
 
 Where `my-enterprise-agent` is the name of the web app you provided during deployment.
 
-##  Gotchas
+## Troubleshooting
 
 - Occasionally, you may get an error during deployment of authorization rules that says "Principal <guid> does not exist in directory <guid>." You can simply retry the deployment, usually the error goes away.
-- Sometimes, the Azure Deploy website gets stuck near the end of a deployment. To check the status of your deployment, you can go to your resource group in the Azure Portal and click **Deployments**. 
+- The name of your storage account must be between 3-24 characters, should only contain lowercase letters and numbers, and must by globally unique.
+- The name of your web app must be globally unique.

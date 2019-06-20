@@ -2,6 +2,41 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "keyVaultName": {
+      "type": "string",
+      "defaultValue" : "contosoAgentVault",
+      "metadata": {
+        "description": "A name for the key vault used to store your enterprise's DID private keys."
+      },
+      "minLength": 2
+    },
+    "keyVaultSkuName": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Standard",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "Specifies whether the key vault is a standard vault or a premium vault."
+      }
+    },
+     "storageAccountName": {
+        "type": "string",
+        "defaultValue": "contosoenterpriseagent",
+        "metadata": {
+          "description": "The Azure blob storage account to be created for storing enterprise agent logs and config."
+        },
+        "minLength": 2
+    },
+    "containerName": {
+      "type": "string",
+      "defaultValue": "enterprise-agent-config",
+      "metadata": {
+        "description": "The name of the blob container to store enterprise agent configuration files."
+      },
+      "minLength": 2
+    },
     "appServicePlanName": {
       "type": "string",
       "defaultValue" : "contoso-enterprise-agent-service-plan",
@@ -52,41 +87,6 @@
       "defaultValue": "master",
       "metadata": {
         "description": "The branch of the GitHub repository to use."
-      },
-      "minLength": 2
-    },
-    "keyVaultName": {
-      "type": "string",
-      "defaultValue" : "contosoAgentVault",
-      "metadata": {
-        "description": "A name for the key vault used to store your enterprise's DID private keys."
-      },
-      "minLength": 2
-    },
-    "keyVaultSkuName": {
-      "type": "string",
-      "defaultValue": "Standard",
-      "allowedValues": [
-        "Standard",
-        "Premium"
-      ],
-      "metadata": {
-        "description": "Specifies whether the key vault is a standard vault or a premium vault."
-      }
-    },
-     "storageAccountName": {
-        "type": "string",
-        "defaultValue": "contosoenterpriseagent",
-        "metadata": {
-          "description": "The Azure blob storage account to be created for storing enterprise agent logs and config."
-        },
-        "minLength": 2
-    },
-    "containerName": {
-      "type": "string",
-      "defaultValue": "enterprise-agent-config",
-      "metadata": {
-        "description": "The name of the blob container to store enterprise agent configuration files."
       },
       "minLength": 2
     }
