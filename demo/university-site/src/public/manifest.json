@@ -1,0 +1,11 @@
+{
+    "@context": "https://identiverse-university.azurewebsites.net/credential/v1",
+    "@type": [
+      "ClaimObject",
+      "VerifiedStudent"
+    ],
+    "issuerName": "Contoso University",
+    "claimLogo": "https://identiverse-university.azurewebsites.net/logo.svg",
+    "hexBackgroundColor": "#005700",
+    "claimName": "Verified Student"
+}

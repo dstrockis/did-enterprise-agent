@@ -5,6 +5,7 @@
  */
 'use strict';
 var http = require('http');
+var url = require('url');
 const KeyVault = require('@azure/keyvault');
 const MsRestAzure = require('@azure/ms-rest-nodeauth');
 const Azure = require("@azure/storage-blob");
@@ -32,18 +33,22 @@ async function main() {
 
     console.log(`Request received at ${Date.now()}`);
 
+    var query = url.parse(request.url, true).query;
+
     try {
 
        // create the contents of the claim (hard-coded for now)
        const credential = {
-          "@context": ["https://schema.org/"],
-          "@type": ["Diploma"],
-          "credentialSubject": {
-            "student_name": "Alice Smith",
-            "graduation_year": "2013",
-            "university_name": "University of California, Los Angeles"
-          }
-        };
+        "@context": "https://identiverse-university.azurewebsites.net/credential/v1",
+        "@type": "VerifiedStudent",
+        "givenName": "Alice",
+        "familyName": "Smith",
+        "identifier": "alice",
+        "affiliation": "Contoso University",
+        "email": "alice@contoso.edu",
+        "did": query.did,
+        "sub": query.did,
+      };
 
       // Form the claim as a verifiable credential in JWT format
       const claimDetails = await Agent.GenerateVerifiableCredential(credential);

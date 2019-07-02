@@ -1,0 +1,38 @@
+{
+  "name": "identiverse-demo-university",
+  "version": "1.0.0",
+  "description": "Koa website for the Identiverse demo university",
+  "main": "dist/src/index.js",
+  "scripts": {
+    "build": "tsc --p tsconfig.json && copyfiles --verbose --up 1 --exclude \"./src/**/*.ts\" \"./src/**/*\" dist/src",
+    "start": "node dist/src/index.js"
+  },
+  "dependencies": {
+    "@microsoft/useragent-sdk": "1.0.0-alpha.12",
+    "@types/request": "^2.48.1",
+    "base64url": "^3.0.1",
+    "koa": "2.7.0",
+    "koa-helmet": "4.2.0",
+    "koa-router": "7.4.0",
+    "koa-session": "5.12.0",
+    "koa-static": "5.0.0",
+    "raw-body": "2.4.0",
+    "request": "^2.88.0",
+    "uuid": "3.3.2"
+  },
+  "devDependencies": {
+    "@types/base64url": "^2.0.0",
+    "@types/koa": "2.0.48",
+    "@types/koa-helmet": "3.1.2",
+    "@types/koa-router": "7.0.40",
+    "@types/koa-session": "5.10.0",
+    "@types/koa-static": "4.0.1",
+    "@types/pouchdb-core": "7.0.2",
+    "@types/uuid": "3.4.4",
+    "copyfiles": "2.1.0",
+    "typescript": "3.4.5",
+    "typescript-map": "0.0.7"
+  },
+  "author": "Microsoft",
+  "license": "ISC"
+}

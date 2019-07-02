@@ -230,25 +230,30 @@ async function GenerateVerifiableCredential(contents) {
 
     // construct the claim to be issued
     const jwtHeader = {
-      "alg": "ES256K",
       "typ": "JWT",
       "kid": `${didConfig.did}#${didConfig.kvKeyVersion}`
     } 
-    const jwtBody = {
-      "sub": "did:alice",
-      "iss": didConfig.did,
-      "iat": Date.now(),
-      "vc": contents
+    const jwtProtectedHeader = {
+      "alg": "ES256K"
     }
+    var jwtBody = contents;
+    jwtBody["iss"] = didConfig.did;
+    jwtBody["iat"] = Date.now();
 
     // form the signature input to pass to KeyVault to be signed
     const encodedBody = base64url(Buffer.from(JSON.stringify(jwtBody)));
-    const encodedHeader = base64url(Buffer.from(JSON.stringify(jwtHeader)));
+    const encodedHeader = base64url(Buffer.from(JSON.stringify(jwtProtectedHeader)));
     const signatureInput = encodedHeader + "." + encodedBody;
     const encodedSignature = await GetSignatureForString(signatureInput, didConfig.kvKeyName, didConfig.kvKeyVersion);
 
     // finally, form the claim as a JWT
-    const claimDetails = `${encodedHeader}.${encodedBody}.${encodedSignature}`;
+    const claimDetails = {
+      "payload": encodedBody,
+      "protected": encodedHeader,
+      "header": jwtHeader,
+      "signature": encodedSignature
+    }
+    
     return claimDetails;
 }
 
