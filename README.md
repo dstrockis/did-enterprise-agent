@@ -7,10 +7,10 @@ Prototype DID Enterprise Agent
 2. Fill out the details in the Azure portal with your own values.
 3. Click Purchase, and wait for deployment to complete! You can view the status of your deployment by navigating to your resource group and clicking on **Deployments**.
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdstrockis%2Fdid-enterprise-agent%2Fmaster%2Fazuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdstrockis%2Fdid-enterprise-agent%2Funiversity-demo%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
-<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Fdstrockis%2Fdid-enterprise-agent%2Fmaster%2Fazuredeploy.json" target="_blank">
+<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Fdstrockis%2Fdid-enterprise-agent%2Funiversity-demo%2Fazuredeploy.json" target="_blank">
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
