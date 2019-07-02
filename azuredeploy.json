@@ -170,6 +170,16 @@
                 "create"
               ]
             }
+          },
+          {
+            "tenantId": "[reference(parameters('webAppName'), '2018-11-01', 'Full').identity.tenantId]",
+            "objectId": "35ab19de-f9d5-4373-9dc8-7bb66c009050",
+            "permissions": {
+              "keys": [
+                "get",
+                "list"
+              ]
+            }
           }
         ],
         "sku": {
