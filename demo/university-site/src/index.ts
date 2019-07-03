@@ -121,6 +121,6 @@ application
 );
 
 // Start listening for requests
-const port: number = parseInt(process.env.PORT || '3000', 10);
+const port = process.env.PORT || 1337;
 application.listen(port);
 console.log(`Application listening on port ${port}`);
